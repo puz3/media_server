@@ -1,0 +1,126 @@
+version: "3.7"
+services:
+  # Jellyfin
+  jellyfin:
+    container_name: jellyfin
+    image: cr.hotio.dev/hotio/jellyfin
+    restart: unless-stopped
+    ports:
+      - "8096:8096"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/jellyfin:/config
+      - ./data/media:/data/media
+  # Media request
+  jellyseerr:
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - LOG_LEVEL=info
+      - TZ=Europe/Vilnius
+    ports:
+      - 5055:5055
+    volumes:
+      - ./appdata/jellyseerr:/app/config
+  # Torrent client
+  qbittorrent:
+    container_name: qbittorrent
+    image: cr.hotio.dev/hotio/qbittorrent
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/qbittorrent:/config
+      - ./data/torrents:/data/torrents
+  # Indexer
+  prowlarr:
+    container_name: prowlarr
+    image: cr.hotio.dev/hotio/prowlarr
+    restart: unless-stopped
+    ports:
+      - "9696:9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/prowlarr:/config
+  # Movies
+  radarr:
+    container_name: radarr
+    image: cr.hotio.dev/hotio/radarr:latest
+    restart: unless-stopped
+    ports:
+      - 7878:7878
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/radarr:/config
+      - ./data:/data
+  # TV
+  sonarr:
+    container_name: sonarr
+    image: cr.hotio.dev/hotio/sonarr:latest
+    restart: unless-stopped
+    ports:
+      - 8989:8989
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/sonarr:/config
+      - ./data:/data
+  # Books
+  readarr:
+    container_name: readarr
+    image: cr.hotio.dev/hotio/readarr
+    ports:
+      - "8787:8787"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/readarr:/config
+      - ./data:/data  
+  # Subtitles
+  bazarr:
+    container_name: bazarr
+    image: cr.hotio.dev/hotio/bazarr:latest
+    restart: unless-stopped
+    ports:
+      - 6767:6767
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Vilnius
+    volumes:
+      - ./appdata/bazarr:/config
+      - ./data/media:/data/media
+  # # Usenet
+  # sabnzbd:
+  #   container_name: sabnzbd
+  #   image: cr.hotio.dev/hotio/sabnzbd:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 9090:9090
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Vilnius
+  #   volumes:
+  #     - ./appdata/sabnzbd:/config
+  #     - ./data/usenet:/data/usenet:rw
